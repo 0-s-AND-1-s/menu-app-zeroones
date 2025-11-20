@@ -1,0 +1,24 @@
+<!-- Not Required these forms as we're going with Stateless
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SignIn Page</title>
+</head>
+<body>
+<form th:action="@{/login}" method="POST">
+    <div>
+        <label for="userName">Username:</label>
+        <input type="text" id="userName" name="userName" required>
+    </div>
+    <div>
+        <label for="pwd">Password:</label>
+        <input type="password" id="pwd" name="pwd" required>
+    </div>
+    <button type="submit">SignIn</button>
+</form>
+<span style="color:red;text-align:center" th:if="${param.error}">Invalid Login details (authentication
+		failed)</span>
+</body>
+</html>
+-->

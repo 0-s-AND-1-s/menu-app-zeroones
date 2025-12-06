@@ -1,13 +1,18 @@
 package com.abhi.controller;
 
+import com.abhi.pojo.AuthenticationRequest;
+import com.abhi.pojo.AuthenticationResponse;
 import com.abhi.pojo.RegisterUser;
 import com.abhi.service.IRegisterUserService;
+import com.abhi.util.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -18,9 +23,15 @@ public class UserAuthenticateController {
 
     private IRegisterUserService registerUserService;
 
+    private AuthenticationManager authenticationManager;
+
+    private JWTUtil jwtUtil;
+
     @Autowired
-    public UserAuthenticateController(IRegisterUserService registerUserService) {
+    public UserAuthenticateController(IRegisterUserService registerUserService, AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
         this.registerUserService = registerUserService;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
     }
 
     @GetMapping("/signUpForm")
@@ -36,6 +47,22 @@ public class UserAuthenticateController {
         String registerMsg = registerUserService.registerUser(registerUser);
         modelMap.put("register", registerMsg);
         return "register_success";
+    }
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<AuthenticationResponse> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUserName(), authenticationRequest.getPassword()));
+        } catch (BadCredentialsException exception) {
+            throw new Exception("Incorrect username or password", exception);
+        }
+
+
+        final UserDetails userDetails = registerUserService.loadUserByUsername(authenticationRequest.getUserName());
+
+        final String jwtToken = jwtUtil.generateToken(userDetails);
+
+        return ResponseEntity.ok(new AuthenticationResponse(jwtToken));
     }
 
     /*  Not Required these forms as we're going with Stateless

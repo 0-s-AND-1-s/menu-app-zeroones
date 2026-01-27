@@ -1,5 +1,6 @@
 package com.abhi.globalexceptionhandler;
 
+import CustomizedExceptions.AuthenticationErrorException;
 import CustomizedExceptions.CustomExceptionResponse;
 import CustomizedExceptions.MenuItemNotFoundException;
 import CustomizedExceptions.UserNotFoundException;
@@ -33,5 +34,12 @@ public class GlobalExceptionHandler {
         System.out.println("Exception Object Name :: " + e.getClass().getName());
         CustomExceptionResponse errorResponse = new CustomExceptionResponse(e.getMessage(), LocalDateTime.now(), "404:Not Found");
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(AuthenticationErrorException.class)
+    public ResponseEntity<CustomExceptionResponse> unAuthenticated(Exception e) {
+        System.out.println("Exception Object Name :: " + e.getClass().getName());
+        CustomExceptionResponse errorResponse = new CustomExceptionResponse(e.getMessage(), LocalDateTime.now(), "401:UnAuthenticated");
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 }

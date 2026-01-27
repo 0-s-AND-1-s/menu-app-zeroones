@@ -1,5 +1,6 @@
 package com.abhi.controller;
 
+import CustomizedExceptions.AuthenticationErrorException;
 import com.abhi.pojo.AuthenticationRequest;
 import com.abhi.pojo.AuthenticationResponse;
 import com.abhi.pojo.RegisterUser;
@@ -49,12 +50,15 @@ public class UserAuthenticateController {
         return "register_success";
     }
 
+    //Upon successful authentication, returning a JSON token
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUserName(), authenticationRequest.getPassword()));
+            System.out.println("-----------------------You're authentication is successful--------------------");
         } catch (BadCredentialsException exception) {
-            throw new Exception("Incorrect username or password", exception);
+            System.out.println("Exception type ::" + exception.getClass().getName());
+            throw new AuthenticationErrorException("Wrong credentials");
         }
 
 

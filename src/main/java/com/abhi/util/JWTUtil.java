@@ -1,5 +1,6 @@
 package com.abhi.util;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -27,10 +28,12 @@ public class JWTUtil {
 
     public String generateToken(UserDetails userDetails) {
 
+        System.out.println("Granted Authority object ::"+userDetails.getAuthorities().getClass().getName());
         // Convert authorities to comma-separated string
         String roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
+        System.out.println("ROLES for user::"+userDetails.getUsername()+" is "+roles);
 
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
@@ -40,7 +43,38 @@ public class JWTUtil {
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
+
+    // ===== helpers to read token =====
+
+    private Claims extractAllClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                // signature verification happens automatically here where it'll recompute the signature here
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    public String extractUsername(String token) {
+        return extractAllClaims(token).getSubject();   // "sub"
+    }
+
+    public Date extractExpiration(String token) {
+        return extractAllClaims(token).getExpiration();
+    }
+
+    private boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    // ===== public validate method =====
+
+    public boolean validateToken(String token, UserDetails userDetails) {
+        String username = extractUsername(token);
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    }
 }
+
 
 
 

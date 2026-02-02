@@ -53,13 +53,19 @@ public class SecurityConfig {
                 //To handle the invalid token that is when user is not authenticated
                         exceptionHandling(
                         ex -> ex.authenticationEntryPoint(
-                                (request, response, authException) -> {
-                                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                                        (request, response, authException) -> {
+                                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                                            response.getWriter().write("\"{\"error\":\"UNAUTHORIZED\"\n,\"message\":\"Missing or invalid token\"}\"");
+                                        })
+                                //To handle the authenticated but unauthorized users that is having no access
+                                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                                    response.getWriter().write("\"{\\\"error\\\":\\\"UNAUTHORIZED\\\",\\\"message\\\":\\\"Missing or invalid token\\\"}\"");
+                                    response.getWriter().write("\"{\"error\":\"FORBIDDEN\"\n,\"message\":\"No Access\"}\"");
                                 }))
                 .authorizeHttpRequests(authenticate ->
-                        authenticate.requestMatchers("/users/authenticate").permitAll()
+                        authenticate.requestMatchers("/users/authenticate", "/api/v2/order/**").permitAll()
                                 .requestMatchers("/api/v1/createItem", "/api/v1/updateItem/**", "/api/v1/deleteItem/**")
                                 .hasAuthority("ROLE_ADMIN").requestMatchers("/api/v1/getAllItems", "/api/v1/getItem/**")
                                 .hasAnyAuthority("ROLE_CUSTOMER", "ROLE_ADMIN")

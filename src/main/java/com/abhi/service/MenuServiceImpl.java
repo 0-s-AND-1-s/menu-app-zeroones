@@ -27,7 +27,10 @@ public class MenuServiceImpl implements IMenuService {
 
     @Override
     public MenuItemResponse getItemById(Integer itemId) {
-        Optional<MenuItem> optional = repo.findById(itemId);
+        Optional<MenuItem> optional = Optional.empty();
+        if (itemId != null) {
+            optional = repo.findById(itemId);
+        }
         MenuItem menuItem = optional.orElseThrow(() -> new MenuItemNotFoundException(itemId));
         MenuItemResponse itemResponse = new MenuItemResponse();
         BeanUtils.copyProperties(menuItem, itemResponse);

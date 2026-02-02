@@ -36,4 +36,10 @@ public class UserOrderController {
         return ResponseEntity.ok(orderResponse);
     }
 
+    @DeleteMapping("/deleteOrderById/{orderId}")
+    public ResponseEntity<String> removeOrderById(@PathVariable Long orderId){
+        String deleteStatus = userOrderService.deleteOrderById(orderId);
+        return ResponseEntity.ok(deleteStatus);
+    }
+
 }

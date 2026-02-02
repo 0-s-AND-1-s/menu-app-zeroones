@@ -9,7 +9,8 @@ import com.abhi.pojo.OrderItemRequest;
 import com.abhi.pojo.OrderItemResponse;
 import com.abhi.pojo.OrderResponse;
 import jakarta.transaction.Transactional;
-import org.hibernate.Hibernate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ import java.util.Optional;
 @Service
 public class UserOrderService implements IUserOrderService {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserOrderService.class);
 
     private IUserOrderRepository userOrderRepository;
 
@@ -30,6 +32,7 @@ public class UserOrderService implements IUserOrderService {
     public UserOrderService(IUserOrderRepository userOrderRepository, IMenuService menuService) {
         this.userOrderRepository = userOrderRepository;
         this.menuService = menuService;
+        logger.info("UserOrderService Object is created");
     }
 
 
@@ -50,6 +53,7 @@ public class UserOrderService implements IUserOrderService {
             order.addOrderItem(orderItem);
         });
         order.setOrderTime(LocalDateTime.now());
+        logger.debug("Creating a new order{}", order);
         Long orderId = userOrderRepository.save(order).getOrderId();
         return "Inserted successfully with the orderId " + orderId;
     }
@@ -57,10 +61,10 @@ public class UserOrderService implements IUserOrderService {
     @Override
     @Transactional
     public OrderResponse getOrderById(Long orderId) {
+        logger.info("Entered into getOrderById(Long orderId) of UserOrderService.class");
         Optional<Order> orderOptional = Optional.empty();
         if (orderId != null) {
             orderOptional = userOrderRepository.findById(orderId);
-            System.out.println(Hibernate.isInitialized(orderOptional.get().getOrderItems()));
         }
         Order order = orderOptional.orElseThrow(() -> new OrderNotFoundException("Order is not existing for given id " + orderId));
         List<OrderItemResponse> orderItemResponses = getOrderItemResponses(order);
@@ -69,6 +73,22 @@ public class UserOrderService implements IUserOrderService {
         orderResponse.setOrderTime(order.getOrderTime());
         orderResponse.setOrderItemResponse(orderItemResponses);
         return orderResponse;
+    }
+
+    @Override
+    public String deleteOrderById(Long orderId) {
+        logger.info("Entered into deleteOrderById(Long orderId) of UserOrderService.class");
+        Optional<Order> order = userOrderRepository.findById(orderId);
+        if (order.isEmpty()) {
+            logger.error("OrderNotFoundException has occurred");
+            throw new OrderNotFoundException("Order is not existing for given id " + orderId);
+        }
+        // TODO: N+1 issue - Currently generates 1 + N delete queries for OrderItems
+        // Optimize with custom @Query: DELETE FROM OrderItem WHERE order_id = ?
+        // Then: DELETE FROM Order WHERE order_id=?
+        userOrderRepository.deleteById(orderId);
+        logger.debug("Order is deleted{}", orderId);
+        return "Order with id " + orderId + " got deleted successfully";
     }
 
     //Later Use MapStruct to copy the properties
@@ -85,6 +105,10 @@ public class UserOrderService implements IUserOrderService {
         });
         return orderItemResponses;
     }
+
+//TODO:Later work on addOrRemoveItem() in an Order  --where you have to analyze on helper method removeItem()
+
+//TODO: work on findByAll() where you need to analyze (N+1) problem with respect to lazy loading
 
 
 }

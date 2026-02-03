@@ -42,4 +42,10 @@ public class UserOrderController {
         return ResponseEntity.ok(deleteStatus);
     }
 
+    @GetMapping("/getAllOrders")
+    public ResponseEntity<List<OrderResponse>> findAllOrders(){
+        List<OrderResponse> allOrders = userOrderService.findAll();
+        return ResponseEntity.ok(allOrders);
+    }
+
 }

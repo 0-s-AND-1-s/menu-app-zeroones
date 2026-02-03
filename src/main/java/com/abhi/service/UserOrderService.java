@@ -71,7 +71,7 @@ public class UserOrderService implements IUserOrderService {
         OrderResponse orderResponse = new OrderResponse();
         orderResponse.setOrderId(order.getOrderId());
         orderResponse.setOrderTime(order.getOrderTime());
-        orderResponse.setOrderItemResponse(orderItemResponses);
+        orderResponse.setOrderItems(orderItemResponses);
         return orderResponse;
     }
 
@@ -91,6 +91,25 @@ public class UserOrderService implements IUserOrderService {
         return "Order with id " + orderId + " got deleted successfully";
     }
 
+
+    //TODO: Fix (N+1) problem for findAll()
+    @Override
+    @Transactional
+    public List<OrderResponse> findAll() {
+        List<Order> allOrders = userOrderRepository.findAll();
+        List<OrderResponse> allOrderResponses = new ArrayList<>();
+        allOrders.forEach(order -> {
+            OrderResponse orderResponse = new OrderResponse();
+            orderResponse.setOrderId(order.getOrderId());
+            orderResponse.setOrderTime(order.getOrderTime());
+            //This is where it'll run the single query for each order
+            List<OrderItemResponse> orderItemResponses = getOrderItemResponses(order);
+            orderResponse.setOrderItems(orderItemResponses);
+            allOrderResponses.add(orderResponse);
+        });
+        return allOrderResponses;
+    }
+
     //Later Use MapStruct to copy the properties
     private static List<OrderItemResponse> getOrderItemResponses(Order order) {
         List<OrderItem> orderItems = order.getOrderItems();
@@ -107,8 +126,6 @@ public class UserOrderService implements IUserOrderService {
     }
 
 //TODO:Later work on addOrRemoveItem() in an Order  --where you have to analyze on helper method removeItem()
-
-//TODO: work on findByAll() where you need to analyze (N+1) problem with respect to lazy loading
 
 
 }

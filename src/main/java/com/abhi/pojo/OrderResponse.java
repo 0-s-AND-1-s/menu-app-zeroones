@@ -8,6 +8,6 @@ import java.util.List;
 @Data
 public class OrderResponse {
     public Long orderId;
-    public List<OrderItemResponse> orderItemResponse;
+    public List<OrderItemResponse> orderItems;
     public LocalDateTime orderTime;
 }

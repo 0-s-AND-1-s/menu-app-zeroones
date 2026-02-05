@@ -92,11 +92,11 @@ public class UserOrderService implements IUserOrderService {
     }
 
 
-    //TODO: Fix (N+1) problem for findAll()
+
     @Override
     @Transactional
     public List<OrderResponse> findAll() {
-        List<Order> allOrders = userOrderRepository.findAll();
+        List<Order> allOrders = userOrderRepository.findAllOrdersAndItems();
         List<OrderResponse> allOrderResponses = new ArrayList<>();
         allOrders.forEach(order -> {
             OrderResponse orderResponse = new OrderResponse();

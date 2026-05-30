@@ -1,4 +1,4 @@
-package com.abhi.pojo;
+package com.abhi.dto.response;
 
 import lombok.Data;
 

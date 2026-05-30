@@ -1,9 +1,10 @@
-package com.abhi.service;
+package com.abhi.service.impl;
 
 import CustomizedExceptions.UserNotFoundException;
-import com.abhi.dao.IRegisterUserRepo;
+import com.abhi.repository.RegisterUserRepo;
 import com.abhi.model.RegisterUserEntity;
-import com.abhi.pojo.RegisterUser;
+import com.abhi.dto.request.RegisterUser;
+import com.abhi.service.RegisterUserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,14 +18,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class RegisterUserServiceImpl implements IRegisterUserService {
+public class RegisterUserServiceImpl implements RegisterUserService {
 
-    private IRegisterUserRepo registerRepo;
+    private RegisterUserRepo registerRepo;
 
     private BCryptPasswordEncoder encoder;
 
     @Autowired
-    public RegisterUserServiceImpl(IRegisterUserRepo registerRepo, BCryptPasswordEncoder encoder) {
+    public RegisterUserServiceImpl(RegisterUserRepo registerRepo, BCryptPasswordEncoder encoder) {
         this.registerRepo = registerRepo;
         this.encoder = encoder;
     }

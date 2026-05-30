@@ -1,11 +1,12 @@
-package com.abhi.service;
+package com.abhi.service.impl;
 
 
 import CustomizedExceptions.MenuItemNotFoundException;
-import com.abhi.dao.IMenuRepository;
+import com.abhi.repository.MenuRepository;
 import com.abhi.model.MenuItem;
-import com.abhi.pojo.MenuItemRequest;
-import com.abhi.pojo.MenuItemResponse;
+import com.abhi.dto.request.MenuItemRequest;
+import com.abhi.dto.response.MenuItemResponse;
+import com.abhi.service.MenuService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,12 +16,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class MenuServiceImpl implements IMenuService {
+public class MenuServiceImpl implements MenuService {
 
-    private IMenuRepository repo;
+    private MenuRepository repo;
 
     @Autowired
-    public MenuServiceImpl(IMenuRepository repo) {
+    public MenuServiceImpl(MenuRepository repo) {
         System.out.println("Service Object is ready " + this.getClass().getName());
         this.repo = repo;
     }

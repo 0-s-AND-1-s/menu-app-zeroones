@@ -1,4 +1,4 @@
-package com.abhi.dao;
+package com.abhi.repository;
 
 import com.abhi.model.Order;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 
-public interface IUserOrderRepository extends JpaRepository<Order, Long> {
+public interface UserOrderRepository extends JpaRepository<Order, Long> {
 
     /*//Left Join will fetch orders even there's no order items
     //If you need only the orders that has OrderItems then go for inner join

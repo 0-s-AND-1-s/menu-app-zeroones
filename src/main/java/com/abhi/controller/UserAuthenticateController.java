@@ -1,10 +1,10 @@
 package com.abhi.controller;
 
 import CustomizedExceptions.AuthenticationErrorException;
-import com.abhi.pojo.AuthenticationRequest;
-import com.abhi.pojo.AuthenticationResponse;
-import com.abhi.pojo.RegisterUser;
-import com.abhi.service.IRegisterUserService;
+import com.abhi.dto.request.AuthenticationRequest;
+import com.abhi.dto.response.AuthenticationResponse;
+import com.abhi.dto.request.RegisterUser;
+import com.abhi.service.RegisterUserService;
 import com.abhi.util.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,14 +22,14 @@ import java.util.Map;
 public class UserAuthenticateController {
 
 
-    private IRegisterUserService registerUserService;
+    private RegisterUserService registerUserService;
 
     private AuthenticationManager authenticationManager;
 
     private JWTUtil jwtUtil;
 
     @Autowired
-    public UserAuthenticateController(IRegisterUserService registerUserService, AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
+    public UserAuthenticateController(RegisterUserService registerUserService, AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
         this.registerUserService = registerUserService;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;

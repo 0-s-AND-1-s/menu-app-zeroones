@@ -1,11 +1,11 @@
 package com.abhi.service;
 
-import com.abhi.pojo.MenuItemRequest;
-import com.abhi.pojo.MenuItemResponse;
+import com.abhi.dto.request.MenuItemRequest;
+import com.abhi.dto.response.MenuItemResponse;
 
 import java.util.List;
 
-public interface IMenuService {
+public interface MenuService {
     MenuItemResponse getItemById(Integer itemId);
 
     List<MenuItemResponse> getAllItems();

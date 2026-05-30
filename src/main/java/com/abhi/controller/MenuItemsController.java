@@ -1,8 +1,8 @@
 package com.abhi.controller;
 
-import com.abhi.pojo.MenuItemRequest;
-import com.abhi.pojo.MenuItemResponse;
-import com.abhi.service.IMenuService;
+import com.abhi.dto.request.MenuItemRequest;
+import com.abhi.dto.response.MenuItemResponse;
+import com.abhi.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +15,10 @@ import java.util.List;
 public class MenuItemsController {
 
 
-    private IMenuService menuService;
+    private MenuService menuService;
 
     @Autowired
-    public MenuItemsController(IMenuService menuService) {
+    public MenuItemsController(MenuService menuService) {
         System.out.println("Controller Object is ready " + this.getClass().getName());
         this.menuService = menuService;
     }

@@ -1,8 +1,8 @@
 package com.abhi.controller;
 
-import com.abhi.pojo.OrderItemRequest;
-import com.abhi.pojo.OrderResponse;
-import com.abhi.service.UserOrderService;
+import com.abhi.dto.request.OrderItemRequest;
+import com.abhi.dto.response.OrderResponse;
+import com.abhi.service.impl.UserOrderServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +15,10 @@ import java.util.List;
 @RequestMapping("/api/v2/order")
 public class UserOrderController {
 
-    private UserOrderService userOrderService;
+    private UserOrderServiceImpl userOrderService;
 
     @Autowired
-    public UserOrderController(UserOrderService userOrderService) {
+    public UserOrderController(UserOrderServiceImpl userOrderService) {
         this.userOrderService = userOrderService;
     }
 
@@ -29,7 +29,7 @@ public class UserOrderController {
         String status = userOrderService.createOrder(orderItemRequest);
         return new ResponseEntity<>(status, HttpStatus.CREATED);
     }
-
+//fang,fang123
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     @GetMapping("/getOrderById/{orderId}")
     public ResponseEntity<OrderResponse> getOrderById(@PathVariable Long orderId) {

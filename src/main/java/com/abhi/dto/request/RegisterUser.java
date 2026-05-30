@@ -1,4 +1,4 @@
-package com.abhi.pojo;
+package com.abhi.dto.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

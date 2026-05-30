@@ -56,4 +56,11 @@ public class GlobalExceptionHandler {
         // You return 500 or 400 here, which prevents the internal /error redirect
         return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(ReceiptNotFoundException.class)
+    public ResponseEntity<CustomExceptionResponse> receiptNotFound(Exception e) {
+        System.out.println("Exception Object Name :: " + e.getClass().getName());
+        CustomExceptionResponse errorResponse = new CustomExceptionResponse(e.getMessage(), LocalDateTime.now(), "404:Not Found");
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
 }

@@ -60,7 +60,7 @@ public class OrderReceiptRepositoryCustomImpl implements OrderReceiptRepositoryC
                 fetch();
         if (tupleList.isEmpty())
             throw new ReceiptNotFoundException("Receipt not available for receipt id::" + receiptId);
-//Receipt -> OrderItems
+
         Tuple firstTuple = tupleList.get(0);
         List<ReceiptItemDetails> receiptItemDetails = tupleList.stream().map((tuple) -> {
             ReceiptItemDetails receiptItemDetail = new ReceiptItemDetails();

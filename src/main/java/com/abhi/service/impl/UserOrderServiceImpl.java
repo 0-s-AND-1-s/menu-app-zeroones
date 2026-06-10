@@ -1,6 +1,7 @@
 package com.abhi.service.impl;
 
 import CustomizedExceptions.OrderNotFoundException;
+import com.abhi.dto.response.OrderSuccessResponse;
 import com.abhi.repository.UserOrderRepository;
 import com.abhi.model.Order;
 import com.abhi.model.OrderItem;
@@ -44,12 +45,12 @@ public class UserOrderServiceImpl implements UserOrderService {
 
     @Override
     @Transactional
-    public String createOrder(List<OrderItemRequest> orderItemRequests) {
+    public OrderSuccessResponse createOrder(List<OrderItemRequest> orderItemRequests) {
         //Copy OrderItemRequest data to OrderItem entity
         //Then prepare a Order entity and save order entity
         Order order = new Order();
         orderItemRequests.forEach(orderItemRequest -> {
-            MenuItemResponse menuItem = menuService.getItemById(orderItemRequest.getMenuId());
+            MenuItemResponse menuItem = menuService.getItemById(orderItemRequest.getItemId());
             OrderItem orderItem = new OrderItem();
             orderItem.setItemName(menuItem.getItemName());
             orderItem.setUnitPrice(menuItem.getItemPrice());
@@ -61,8 +62,8 @@ public class UserOrderServiceImpl implements UserOrderService {
         order.setOrderTime(LocalDateTime.now());
         logger.debug("Creating a new order{}", order);
         Long orderId = userOrderRepository.save(order).getOrderId();
-        orderReceiptService.saveReceiptForOrder(order);
-        return "Inserted successfully with the orderId " + orderId;
+        Integer receiptId = orderReceiptService.saveReceiptForOrder(order);
+        return new OrderSuccessResponse(orderId,receiptId,"Inserted successfully with the orderId " + orderId);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.abhi.controller;
 
 import com.abhi.dto.request.OrderItemRequest;
 import com.abhi.dto.response.OrderResponse;
+import com.abhi.dto.response.OrderSuccessResponse;
 import com.abhi.service.impl.UserOrderServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,10 +25,10 @@ public class UserOrderController {
 
     @PreAuthorize("hasAnyRole('ROLE_CUSTOMER','ROLE_ADMIN')")
     @PostMapping("/create")
-    public ResponseEntity<String> createOrder(@RequestBody List<OrderItemRequest> orderItemRequest) {
+    public ResponseEntity<OrderSuccessResponse> createOrder(@RequestBody List<OrderItemRequest> orderItemRequest) {
         System.out.println(orderItemRequest.size());
-        String status = userOrderService.createOrder(orderItemRequest);
-        return new ResponseEntity<>(status, HttpStatus.CREATED);
+        OrderSuccessResponse orderSuccessResponse = userOrderService.createOrder(orderItemRequest);
+        return new ResponseEntity<>(orderSuccessResponse, HttpStatus.CREATED);
     }
 //fang,fang123
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")

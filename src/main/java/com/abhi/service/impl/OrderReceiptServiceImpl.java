@@ -27,7 +27,7 @@ public class OrderReceiptServiceImpl implements OrderReceiptService {
 
     @Override
     @Transactional
-    public void saveReceiptForOrder(Order order) {
+    public Integer saveReceiptForOrder(Order order) {
         List<OrderItem> orderReceiptItems = order.getOrderItems();
         Receipt receiptEntity = new Receipt();
         final BigDecimal taxPercent = BigDecimal.valueOf(0.0825);
@@ -40,8 +40,9 @@ public class OrderReceiptServiceImpl implements OrderReceiptService {
         receiptEntity.setSubTotal(subTotal);
         receiptEntity.setSalesTax(salesTax);
         receiptEntity.setTotal(total);
-        orderReceiptRepository.save(receiptEntity);
+        Integer receiptId = orderReceiptRepository.save(receiptEntity).getReceiptId();
         System.out.println("Receipt saved successfully");
+        return receiptId;
     }
 
     @Override

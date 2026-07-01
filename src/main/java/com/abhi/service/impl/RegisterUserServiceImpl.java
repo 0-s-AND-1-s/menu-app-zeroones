@@ -33,13 +33,13 @@ public class RegisterUserServiceImpl implements RegisterUserService {
     @Override
     public String registerUser(RegisterUser userDTO) {
         RegisterUserEntity registerEntity = new RegisterUserEntity();
-        if (userDTO.getUserName() == null || userDTO.getUserName().isEmpty() || userDTO.getPwd() == null || userDTO.getPwd().trim().isEmpty()) {
+        if (userDTO.getUserName() == null || userDTO.getUserName().isEmpty() || userDTO.getPassword() == null || userDTO.getPassword().trim().isEmpty()) {
             throw new IllegalArgumentException("Invalid Inputs");
         }
-        userDTO.setPwd(encoder.encode(userDTO.getPwd()));
+        userDTO.setPassword(encoder.encode(userDTO.getPassword()));
         System.out.println("RegisterUserServiceImpl.registerUser() USERDTO:: " + userDTO);
         BeanUtils.copyProperties(userDTO, registerEntity, "userId");
-        System.out.println("RegisterUserServiceImpl.registerUser() REGISTERENTITY:: " + registerEntity);
+        System.out.println("RegisterUserServiceImpl.registerUser() REGISTER ENTITY:: " + registerEntity);
         String userName = registerRepo.save(registerEntity).getUserName();
         return userName + " registered successfully";
     }
@@ -50,6 +50,6 @@ public class RegisterUserServiceImpl implements RegisterUserService {
         RegisterUserEntity registerUserEntity = registerRepo.findRegisterUserEntityByUserName(username).orElseThrow(() -> new UserNotFoundException(username));
         System.out.println("RegisterUserEntity from DB loadUserByUsername() ::" + registerUserEntity);
         Set<String> authority = registerUserEntity.getAuthorityType();
-        return new User(username, registerUserEntity.getPwd(), authority.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet()));
+        return new User(username, registerUserEntity.getPassword(), authority.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet()));
     }
 }

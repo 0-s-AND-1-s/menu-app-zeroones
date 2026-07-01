@@ -29,7 +29,7 @@ public class RegisterUserEntity {
 
     private String userName;
 
-    private String pwd;
+    private String password;
 
     @ElementCollection(fetch = FetchType.EAGER) // Correctly marks this as a collection of simple types
     @CollectionTable(

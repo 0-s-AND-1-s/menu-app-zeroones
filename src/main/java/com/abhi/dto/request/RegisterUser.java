@@ -14,6 +14,6 @@ import java.util.Set;
 public class RegisterUser {
 
     private String userName;
-    private String pwd;
+    private String password;
     private Set<String> authorityType;
 }

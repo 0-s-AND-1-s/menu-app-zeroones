@@ -2,8 +2,8 @@ package com.abhi.controller;
 
 import CustomizedExceptions.AuthenticationErrorException;
 import com.abhi.dto.request.AuthenticationRequest;
-import com.abhi.dto.response.AuthenticationResponse;
 import com.abhi.dto.request.RegisterUser;
+import com.abhi.dto.response.AuthenticationResponse;
 import com.abhi.service.RegisterUserService;
 import com.abhi.util.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +12,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
-
-@Controller
+@RestController
 @RequestMapping("/users")
 public class UserAuthenticateController {
 
@@ -35,19 +35,11 @@ public class UserAuthenticateController {
         this.jwtUtil = jwtUtil;
     }
 
-    @GetMapping("/signUpForm")
-    public String showSignUpForm() {
-        return "signup";
-    }
-
-
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute RegisterUser registerUser, Map<String, String> modelMap) {
-        System.out.println("Implementation object of MODEL" + modelMap.getClass().getName());
+    public ResponseEntity<String> registerUser(@RequestBody RegisterUser registerUser) {
         System.out.println("RegisterUser :: " + registerUser);
-        String registerMsg = registerUserService.registerUser(registerUser);
-        modelMap.put("register", registerMsg);
-        return "register_success";
+        return ResponseEntity.ok(registerUserService.registerUser(registerUser));
+
     }
 
     //Upon successful authentication, returning a JSON token
@@ -69,9 +61,4 @@ public class UserAuthenticateController {
         return ResponseEntity.ok(new AuthenticationResponse(jwtToken));
     }
 
-    /*  Not Required these forms as we're going with Stateless
-    @GetMapping("/signIn")
-    public String showLoginPage(){
-        return "signin";
-    }*/
 }

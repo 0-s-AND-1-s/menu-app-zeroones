@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v2/order")
+@RequestMapping("/api/v1/orders")
 public class UserOrderController {
 
     private UserOrderServiceImpl userOrderService;
@@ -24,7 +24,7 @@ public class UserOrderController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_CUSTOMER','ROLE_ADMIN')")
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<OrderSuccessResponse> createOrder(@RequestBody List<OrderItemRequest> orderItemRequest) {
         System.out.println(orderItemRequest.size());
         OrderSuccessResponse orderSuccessResponse = userOrderService.createOrder(orderItemRequest);
@@ -32,7 +32,7 @@ public class UserOrderController {
     }
 //fang,fang123
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    @GetMapping("/getOrderById/{orderId}")
+    @GetMapping("/{orderId}")
     public ResponseEntity<OrderResponse> getOrderById(@PathVariable Long orderId) {
         OrderResponse orderResponse = userOrderService.getOrderById(orderId);
         System.out.println("Sending OrderResponse DTO" + orderResponse);
@@ -40,14 +40,14 @@ public class UserOrderController {
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @DeleteMapping("/deleteOrderById/{orderId}")
+    @DeleteMapping("/{orderId}")
     public ResponseEntity<String> removeOrderById(@PathVariable Long orderId){
         String deleteStatus = userOrderService.deleteOrderById(orderId);
         return ResponseEntity.ok(deleteStatus);
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @GetMapping("/getAllOrders")
+    @GetMapping
     public ResponseEntity<List<OrderResponse>> findAllOrders(){
         List<OrderResponse> allOrders = userOrderService.findAll();
         return ResponseEntity.ok(allOrders);

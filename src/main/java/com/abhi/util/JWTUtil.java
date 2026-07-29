@@ -2,7 +2,6 @@ package com.abhi.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
@@ -36,23 +35,22 @@ public class JWTUtil {
         System.out.println("ROLES for user::"+userDetails.getUsername()+" is "+roles);
 
         return Jwts.builder()
-                .setSubject(userDetails.getUsername())
-                .claim("roles", roles)          // <-- **Important**
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .subject(userDetails.getUsername())
+                .claim("roles", roles)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + expirationMs))
+                .signWith(getSigningKey())
                 .compact();
     }
 
     // ===== helpers to read token =====
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
                 .build()
-                // signature verification happens automatically here where it'll recompute the signature here
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     public String extractUsername(String token) {
@@ -74,7 +72,3 @@ public class JWTUtil {
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 }
-
-
-
-

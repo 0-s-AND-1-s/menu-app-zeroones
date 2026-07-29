@@ -67,7 +67,7 @@ public class SecurityConfig {
                                     response.getWriter().write("\"{\"error\":\"FORBIDDEN\"\n,\"message\":\"No Access\"}\"");
                                 }))
                 .authorizeHttpRequests(authenticate ->
-                        authenticate.requestMatchers("/users/authenticate","/users/register").permitAll()
+                        authenticate.requestMatchers("/users/authenticate","/users/register","/**").permitAll()
                                 .requestMatchers("/api/v1/createItem", "/api/v1/updateItem/**", "/api/v1/deleteItem/**")
                                 .hasAuthority("ROLE_ADMIN").requestMatchers("/api/v1/getAllItems", "/api/v1/getItem/**","/api/v1/getReceipt/**")
                                 .hasAnyAuthority("ROLE_CUSTOMER", "ROLE_ADMIN")

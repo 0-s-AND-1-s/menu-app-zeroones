@@ -11,7 +11,9 @@ import java.util.List;
 
 //BiDirectional association
 @Entity
-@Table(name = "Orders")
+@Table(name = "Orders"/*,
+        indexes = { @Index(name = "idx_orders_order_time", columnList = "order_time") }*/
+)
 @Getter
 @Setter
 @NoArgsConstructor

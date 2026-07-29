@@ -12,6 +12,11 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(
+        indexes = {
+                @Index(name = "idx_order_item_order_id", columnList = "order_id")
+        }
+)
 public class OrderItem {
 
     @Id
